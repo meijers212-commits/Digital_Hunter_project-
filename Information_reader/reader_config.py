@@ -8,15 +8,23 @@ class ReraderConfig:
         self.log_event = log_event
 
         self.bootstrap_servers = os.getenv("BOOTSTRAP_SERVERS")
-        self.topics = os.getenv("consumer_topics")
-        self.consumer_topics = [topic.strip for topic in self.topics.split()]
-        self.consumer_group_id = os.getenv("consumer_group_id")
+        self.consumer_topics = os.getenv("consumer_topics").split(",")
+        self.producer_topic = os.getenv("producer_topic")
+        self.client_id = os.getenv("client_id").split(",")
+        self.sql_host = os.getenv("producer_topic")
+        self.sql_user = os.getenv("producer_topic")
+        self.sql_password = os.getenv("MYSQL_ROOT_PASSWORD")
+        self.sql_database = os.getenv("MYSQL_DATABASE")
+
 
         self.consumer_config = {
         "bootstrap.servers": self.bootstrap_servers,
-        "group.id": self.consumer_group_id,
+        "group.id": "order-tracker",
         "auto.offset.reset": "earliest"
         }
+
+
+
 
 
         self.validation()
@@ -26,7 +34,6 @@ class ReraderConfig:
         necessary_variables = {
             "bootstrap_servers": self.bootstrap_servers,
             "consumer_topic": self.consumer_topics,
-            "consumer_group_id": self.consumer_group_id,
             "consumer_config": self.consumer_config
         }
 

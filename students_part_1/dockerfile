@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-COPY students_part_1 ./app
+COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 

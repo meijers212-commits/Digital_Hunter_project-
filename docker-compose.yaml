@@ -5,28 +5,49 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
-
     environment:
       KAFKA_KRAFT_MODE: 'true'
-
-      CLUSTER_ID: '1L6g7nGhU-eAKfL--X25wo'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
       KAFKA_NODE_ID: 1
-
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-
-      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
-
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
     volumes:
-      - kafka_kraft:/var/lib/kafka/data
+      - kafka_data:/var/lib/kafka/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+  
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: hunter_project
+    volumes:
+      - todo-mysql-data:/var/lib/mysql  
 
   students_part_1:
-    
+    build: ./students_part_1
+    image: students_part_1
+    container_name: students_part_1
+    depends_on:
+      - kafka
+      - elasticsearch
 
   information_reader:
     build: 
@@ -34,14 +55,22 @@ services:
       dockerfile: ./information_reader/dockerfile
     environment:
       - BOOTSTRAP_SERVERS=kafka:29092
-      - consumer_topics="Intel,Attack,Damage"
+      - consumer_topics=intel
       - consumer_group_id=digital_hunter 
+      - producer_topic=intel_signals_dlq
+      - client_id=information_reader
+      - sql_host=mysql
+      - sql_user=root
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=hunter_project
+
+
     depends_on:
       - kafka
-    
-     
-      
-
+      - elasticsearch
+      - students_part_1
 
 volumes:
-  kafka_kraft:
+  kafka_data:
+  esdata:
+  todo-mysql-data:
