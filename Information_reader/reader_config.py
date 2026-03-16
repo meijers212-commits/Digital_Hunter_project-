@@ -49,4 +49,3 @@ class ReraderConfig:
 
         else:
             self.log_event(level="info", message="All variables found and loaded.")
-
