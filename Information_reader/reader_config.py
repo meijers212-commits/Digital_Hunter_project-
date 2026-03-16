@@ -5,8 +5,11 @@ class ReraderConfig:
     
     def __init__(self, log_event: log_event):
 
+        self.log_event = log_event
+
         self.bootstrap_servers = os.getenv("BOOTSTRAP_SERVERS")
-        self.consumer_topics = os.getenv("consumer_topics")
+        self.topics = os.getenv("consumer_topics")
+        self.consumer_topics = [topic.strip for topic in self.topics.split()]
         self.consumer_group_id = os.getenv("consumer_group_id")
 
         self.consumer_config = {
@@ -30,7 +33,7 @@ class ReraderConfig:
         missing = []
 
         for name , value in necessary_variables.items():
-            if value is None or value.strip() == "":
+            if value is None:
                 missing.append(name)
 
         if missing:

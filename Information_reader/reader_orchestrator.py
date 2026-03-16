@@ -3,7 +3,7 @@ from reader_config import ReraderConfig
 from shaerd.logger.logger import log_event
 import json
 
-config = ReraderConfig()
+config = ReraderConfig(log_event=log_event)
 
 cons = KafkaConsumer(
     log_event=log_event,

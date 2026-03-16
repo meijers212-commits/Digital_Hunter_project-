@@ -16,26 +16,33 @@ class KafkaConsumer:
             self.log_event(level="exception", message=f"Unable to activate the consumer, Error:{e}")
             raise Exception(e)
 
-       
         try:
-
-            while True:
-
-                topics = self.consumer.list_topics(timeout=5)
-
-                if consumer_topic in topics.topics:
-
-                    self.consumer.subscribe(consumer_topic)
-                    self.log_event(level="info", message=f"🟢 Consumer is running and subscribed to topic: {consumer_topic}")
-                    break
-
-                else:
-                    self.log_event(level="info", message=f"topic: {consumer_topic} not found trying again")
-                    time.sleep(3)
-
+            self.consumer.subscribe(consumer_topic)
+            self.log_event(level="info", message=f"🟢 Consumer is running and subscribed to topic: {consumer_topic}")
         except Exception as e:
+
             self.log_event(level="exception", message=e)
             raise Exception(e)
+        
+        # try:
+
+        #     while True:
+
+        #         topics = self.consumer.list_topics(timeout=5)
+
+        #         if consumer_topic in topics.topics:
+
+        #             self.consumer.subscribe(consumer_topic)
+        #             self.log_event(level="info", message=f"🟢 Consumer is running and subscribed to topic: {consumer_topic}")
+        #             break
+
+        #         else:
+        #             self.log_event(level="info", message=f"topic: {consumer_topic} not found trying again")
+        #             time.sleep(3)
+
+        # except Exception as e:
+        #     self.log_event(level="exception", message=e)
+        #     raise Exception(e)
 
 
     def get_consumer(self) -> Consumer:

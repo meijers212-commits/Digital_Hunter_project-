@@ -25,7 +25,8 @@ services:
     volumes:
       - kafka_kraft:/var/lib/kafka/data
 
-
+  students_part_1:
+    
 
   information_reader:
     build: 
@@ -33,7 +34,7 @@ services:
       dockerfile: ./information_reader/dockerfile
     environment:
       - BOOTSTRAP_SERVERS=kafka:29092
-      - consumer_topics=["Intel","Attack","Damage"]
+      - consumer_topics="Intel,Attack,Damage"
       - consumer_group_id=digital_hunter 
     depends_on:
       - kafka
