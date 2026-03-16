@@ -2,8 +2,8 @@ from shaerd.kafka.consumer import KafkaConsumer
 from reader_config import ReraderConfig
 from shaerd.logger.logger import log_event
 from shaerd.kafka.producer import KafkaProducer
-from logic import process_message, save_to_db, Get_sql_db_connection
-import json
+from logic import Logic
+from shaerd.db.sql import Init_db_and_connection
 
 config = ReraderConfig(log_event=log_event)
 
@@ -21,12 +21,22 @@ producer = KafkaProducer(
     producer_topic=config.producer_topic,
     client_id=config.client_id)
 
-sql_conn = Get_sql_db_connection(
+sql = Init_db_and_connection(
+    log_event=log_event,
     host=config.sql_host,
     user=config.sql_user,
     password=config.sql_password,
-    database=config.sql_database
+    db_name=config.sql_database
     )
+
+sql_conn = sql.connection
+
+
+try:
+    sql.create_db_and_table()
+
+except Exception as e:
+    log_event(level="error",message="cant create db and table", extra_info=e)
 
 try:
     while True:
@@ -45,14 +55,17 @@ try:
             try:
 
                 value = msg.value().decode("utf-8")
-                process_message(
-                    save_to_db=save_to_db,
+
+                Logic.process_message(
+                    validate_schema=Logic.validate_schema,
+                    save_to_db=Logic.save_to_db,
                     log_event=log_event,
                     db_connection=sql_conn,
+                    db_name=config.sql_database,
                     producer=producer,
                     msg_value=value,
                     topic=msg.topic()
-                    )
+                )
 
             except Exception as e:
                 log_event(level="eroor",message="json is not good")

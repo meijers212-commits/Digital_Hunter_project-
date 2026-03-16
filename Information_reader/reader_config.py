@@ -11,11 +11,10 @@ class ReraderConfig:
         self.consumer_topics = os.getenv("consumer_topics").split(",")
         self.producer_topic = os.getenv("producer_topic")
         self.client_id = os.getenv("client_id").split(",")
-        self.sql_host = os.getenv("producer_topic")
-        self.sql_user = os.getenv("producer_topic")
+        self.sql_host = os.getenv("sql_host")
+        self.sql_user = os.getenv("sql_user")
         self.sql_password = os.getenv("MYSQL_ROOT_PASSWORD")
         self.sql_database = os.getenv("MYSQL_DATABASE")
-
 
         self.consumer_config = {
         "bootstrap.servers": self.bootstrap_servers,
@@ -34,7 +33,12 @@ class ReraderConfig:
         necessary_variables = {
             "bootstrap_servers": self.bootstrap_servers,
             "consumer_topic": self.consumer_topics,
-            "consumer_config": self.consumer_config
+            "producer_topic": self.producer_topic,
+            "client_id": self.client_id,
+            "sql_host": self.sql_host,
+            "sql_user": self.sql_user,
+            "sql_password": self.sql_password,
+            "sql_database": self.sql_database,
         }
 
         missing = []

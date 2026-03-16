@@ -55,7 +55,7 @@ services:
       dockerfile: ./information_reader/dockerfile
     environment:
       - BOOTSTRAP_SERVERS=kafka:29092
-      - consumer_topics=intel
+      - consumer_topics=intel,attack,damage
       - consumer_group_id=digital_hunter 
       - producer_topic=intel_signals_dlq
       - client_id=information_reader

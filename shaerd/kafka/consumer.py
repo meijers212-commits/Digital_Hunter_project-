@@ -1,11 +1,10 @@
 from confluent_kafka import Consumer
-import time
 from shaerd.logger.logger import log_event
 
 
 class KafkaConsumer:
     def __init__(
-        self, log_event: log_event, consumer_config: dict, consumer_topic: list
+        self, log_event, consumer_config, consumer_topic
     ):
 
         self.log_event = log_event
