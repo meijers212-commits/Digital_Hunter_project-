@@ -36,7 +36,7 @@ class Logic:
         if not validate_schema(data, topic):
             log_event(level="warning",message=f"logical error in {topic}, sending")
             producer.publish(msg_value)
-            return
+            return 
 
 
         save_to_db(
