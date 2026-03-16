@@ -3,7 +3,7 @@ import time
 from shaerd.logger.logger import log_event
 
 class KafkaConsumer:
-    def __init__(self, log_event: log_event, consumer_config: dict, consumer_topic: str):
+    def __init__(self, log_event: log_event, consumer_config: dict, consumer_topic: list):
 
         self.log_event = log_event
 
@@ -25,7 +25,7 @@ class KafkaConsumer:
 
                 if consumer_topic in topics.topics:
 
-                    self.consumer.subscribe([consumer_topic])
+                    self.consumer.subscribe(consumer_topic)
                     self.log_event(level="info", message=f"🟢 Consumer is running and subscribed to topic: {consumer_topic}")
                     break
 

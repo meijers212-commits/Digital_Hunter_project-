@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   kafka:
@@ -25,6 +24,23 @@ services:
 
     volumes:
       - kafka_kraft:/var/lib/kafka/data
+
+
+
+  information_reader:
+    build: 
+      context: .
+      dockerfile: ./information_reader/dockerfile
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:29092
+      - consumer_topics=["Intel","Attack","Damage"]
+      - consumer_group_id=digital_hunter 
+    depends_on:
+      - kafka
+    
+     
+      
+
 
 volumes:
   kafka_kraft:

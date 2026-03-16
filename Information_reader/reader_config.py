@@ -6,8 +6,15 @@ class ReraderConfig:
     def __init__(self, log_event: log_event):
 
         self.bootstrap_servers = os.getenv("BOOTSTRAP_SERVERS")
-        self.consumer_topic = os.getenv("consumer_topic")
+        self.consumer_topics = os.getenv("consumer_topics")
         self.consumer_group_id = os.getenv("consumer_group_id")
+
+        self.consumer_config = {
+        "bootstrap.servers": self.bootstrap_servers,
+        "group.id": self.consumer_group_id,
+        "auto.offset.reset": "earliest"
+        }
+
 
         self.validation()
 
@@ -15,8 +22,9 @@ class ReraderConfig:
 
         necessary_variables = {
             "bootstrap_servers": self.bootstrap_servers,
-            "consumer_topic": self.consumer_topic,
-            "consumer_group_id": self.consumer_group_id
+            "consumer_topic": self.consumer_topics,
+            "consumer_group_id": self.consumer_group_id,
+            "consumer_config": self.consumer_config
         }
 
         missing = []
