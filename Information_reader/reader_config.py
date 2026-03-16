@@ -22,10 +22,6 @@ class ReraderConfig:
         "auto.offset.reset": "earliest"
         }
 
-
-
-
-
         self.validation()
 
     def validation(self):
